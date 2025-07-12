@@ -19,16 +19,22 @@ const handleLogIn = async (e) => {
        
         const findUser = await axios.post('http://localhost:5000/api/todos/account/login', {checkUserPassword: formData.password})
         console.log(findUser.data.id)
-        localStorage.setItem('currentUser',JSON.stringify(findUser.data.id))
-        setCurrentUser(findUser.data.id);
-        if(findUser.data.id!= null)
+        if(findUser.data.id== null)
           {
-            navigate('/todo')
-          }
-        else{
-          navigate('/signup');
-        }
+            console.log("User not found, redirecting to signup");
+            navigate('/signup');
+            localStorage.setItem('currentUser',JSON.stringify(findUser.data.id))
+            setCurrentUser(findUser.data.id);
        
+          }
+          else{
+            console.log("User found, redirecting to dashboard");
+            navigate('/dashboard')
+            localStorage.setItem('currentUser',JSON.stringify(findUser.data.id))
+            setCurrentUser(findUser.data.id);
+          } 
+        
+        
         }catch(error){
           console.error(error)
     }

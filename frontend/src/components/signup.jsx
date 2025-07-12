@@ -14,11 +14,12 @@ function Signup({ setCurrentUser }) {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
+      console.log("on signup");
       const signUp = await axios.post('http://localhost:5000/api/todos/account/signup', formData);
       const new_id = signUp.data.id;
-       localStorage.setItem('currentUser', JSON.stringify(new_id))
+      localStorage.setItem('currentUser', JSON.stringify(new_id))
       setCurrentUser(new_id);
-      navigate('/todo')
+      navigate('/dashboard');
            
     } catch (error) {
       console.log(error);
