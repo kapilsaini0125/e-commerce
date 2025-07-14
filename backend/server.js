@@ -31,20 +31,26 @@ const Product= mongoose.model('Product', new mongoose.Schema({
       category: String
       
 }));
-const Kart= mongoose.model('Kart', new mongoose.Schema({
-      _name: String,
-      _price: String,
-      _category: String,
+const kartItem= mongoose.model('kartItem', new mongoose.Schema({
+      productId: String,
+      userId: String, //saare products aa rhe h islyea
+      quantity: Number,
       selected: Boolean
-    
+      
 }));
 const Order= mongoose.model('Order', new mongoose.Schema({
-      totalProduct: [
+      products: [
         {
           productId: String,
           quantity: Number
         }
-      ]
+      ],
+        userId: String,
+        paymentId: String,
+        addrress: String, 
+}))
+const Address= mongoose.model('Address', new mongoose.Schema({
+    address: String
 }))
 
 app.post('/api/todos/account/signup', async (req, res) => {
@@ -60,9 +66,9 @@ app.post('/api/todos/account/signup', async (req, res) => {
 })
 
 app.post('/api/todos/account/login', async (req, res) => {
-    const { checkUserPassword } = req.body;
+    const  checkUserPassword  = req.body.checkUserPassword;
     try {
-        console.log("Received login request:" )
+        console.log("Received login request:", checkUserPassword) // issue
         const user = await Account.findOne({ userPassword: checkUserPassword });
         console.log("User", user);
         
@@ -106,16 +112,34 @@ app.get('/api/todos/account/products', async (req, res) => {
 
 })
 
-app.get('/api/addToKart', async (req, res) => {
+app.post('/api/addToKart', async (req, res) => {
     console.log("Received add to kart request:" )
     
-    const { name, price, category } = req.body;
-        
+    const {productUser, id} = req.body;
+        console.log(productUser, id);
     try {
-        const newProduct = new Kart({ _name: name, _price: price, _category: category, selected: true });
-        await newProduct.save();
+        const newKartItem = new kartItem({ productId: id, userId: productUser, quantity: 1, selected: true });
+        await newKartItem.save();
+        console.log( newKartItem);
+        res.status(201).json({ message: 'Product added to kart successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Error adding product to kart' });
+    }
+    
+})
+
+app.get('/api/todos/account/kart', async (req, res) => {
+    const { productUser } = req.query;
+    console.log(productUser);
+    try {
+        const kartItems = await kartItem.find({
+            userId: productUser
+ 
+        });
+        console.log("Kart items:", kartItems);
+        res.status(200).json(kartItems);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching kart items' });
     }
 })
 

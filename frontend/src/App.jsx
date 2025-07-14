@@ -8,7 +8,6 @@ import Login from './components/login';
 
 
 
-
 function App(){
  const [currentUser, setCurrentUser] = useState(() => {
   const res= localStorage.getItem('currentUser');
@@ -45,8 +44,8 @@ function App(){
         <Route path="/" element={currentUser? <Navigate to="/dashboard" />: <Navigate to="/signup" />} />
         <Route path="/signup" element={<Signup setCurrentUser={setCurrentUser}/>} />
         <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
-        <Route path="/dashboard" element={<Dashboard  products={products} setCurrentUser={setCurrentUser}/>} />
-      </Routes>
+        <Route path="/dashboard" element={<Dashboard  products={products} currentUser= {currentUser} setCurrentUser={setCurrentUser}/>} />
+       </Routes>
           </BrowserRouter>
        
     </>
