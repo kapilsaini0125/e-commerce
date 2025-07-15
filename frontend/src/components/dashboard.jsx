@@ -5,10 +5,16 @@ import axios from 'axios';
 function Dashboard({ products, currentUser, setCurrentUser}) {
 
   const [kartProduct, setKartProduct] = useState([]);
+  const [details, setDetails] = useState(false);
+  const [productDetails, setProdutDetails] = useState(() => {
+    const a= localStorage.getItem('productDetails');
+    return a != null ? JSON.parse(a) : null
+  });
   const navigate = useNavigate();
   
   useEffect(() => {
-  }, [kartProduct]);
+    console.log(productDetails);
+  }, [kartProduct, details]);
 
   const addKart = async (product) => {
     try {
@@ -29,7 +35,7 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
 
   const showKart = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/todos/account/kart',
+      const response = await axios.get('http://localhost:5000/api/Showkart',
         {
           params:{ productUser: currentUser}}
       );
@@ -40,7 +46,32 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
       console.error('Error fetching products:', error);
     }
   }
+  
+  const showDetails = async (id) => {
+    console.log( id);
+    try {
+      const response = await axios.get('http://localhost:5000/api/products/details',
+        {
+          params:{ currentProduct: id}}
+      );
+      localStorage.setItem('productDetails', JSON.stringify(response.data));
+      setDetails(true);
+      console.log("Product details:", response.data);
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
+  }
 
+  if(details){
+    return (
+      <div>
+     
+     <h1>name: {productDetails.name} | price: {productDetails.price} | category: {productDetails.category}</h1>
+            
+      </div>
+    )
+      
+  }
 
   if(kartProduct.length > 0) {
     return (
@@ -65,14 +96,7 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
 
   }
   
-  if(kartProduct.length === 0) {
-    return(
-      <div>
-        <h1>No products in Kart</h1>
-        
-      </div>
-    )
-  }
+  
 
   return (
     <div >
@@ -80,7 +104,11 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
       <ul >
         {products.map(product => (
           <li key={product._id} >
-            <h2>Name: {product.name} | Price: {product.price} | Category: {product.category}</h2>
+            <button onClick={() => {
+             showDetails(product._id); 
+            }}>
+            <h2>{product.name} </h2>
+            </button>
             <button onClick={() => {
               addKart(product._id)
              }
@@ -109,3 +137,18 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
   );}
 
 export default Dashboard
+
+
+/*<ul >
+        {products.map(product => (
+          <li key={product._id} >
+            <h2>Name: {product.name} | Price: {product.price} | Category: {product.category}</h2>
+            <button onClick={() => {
+              addKart(product._id)
+             }
+          }>
+           Buy
+          </button>
+          </li>
+        ))}
+      </ul>*/

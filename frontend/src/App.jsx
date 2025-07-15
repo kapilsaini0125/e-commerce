@@ -18,7 +18,7 @@ function App(){
  const initilizeProducts = async () => {
       try {
         console.log("Initializing products...");
-        const  product = await axios.get('http://localhost:5000/api/todos/account/products');
+        const  product = await axios.get('http://localhost:5000/api/products/dashBoard');
          setProducts(product.data)
         
       } catch (error) {
