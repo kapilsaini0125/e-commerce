@@ -14,10 +14,15 @@ export const signupUser= async (req, res) => {
 
 
 export const loginUser=  async (req, res) => {
-    const  checkUserPassword  = req.body.checkUserPassword;
+    const checkUser = req.body;
     try {
-        console.log("Received login request:", checkUserPassword) // issue
-        const user = await Account.findOne({ userPassword: checkUserPassword });
+        console.log("Received login request:", checkUser) // issue
+        const user = await Account.findOne(
+            { 
+                userPassword: checkUser.password,
+                userName: checkUser.name 
+                }
+        );
         console.log("User", user);
         
            res.status(200).json({ id: user ? user._id : null });

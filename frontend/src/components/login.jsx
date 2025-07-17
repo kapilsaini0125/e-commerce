@@ -7,7 +7,8 @@ function Login({setCurrentUser}){
 const navigate= useNavigate();
 
 const [formData, setFormData] = useState({
-    password: ''
+    password: '',
+    name: ''
   });
 
 const handleLogIn = async (e) => {
@@ -17,7 +18,7 @@ const handleLogIn = async (e) => {
        
       try{
        
-        const findUser = await axios.post('http://localhost:5000/api/todos/account/login', {checkUserPassword: formData.password})
+        const findUser = await axios.post('http://localhost:5000/api/todos/account/login', formData);
         console.log(findUser.data.id)
         if(findUser.data.id== null)
           {
@@ -48,6 +49,14 @@ const handleLogIn = async (e) => {
         <form onSubmit={handleLogIn} className="space-y-4">
             
             <div>
+            <label className="block mb-1">name:</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                className="w-full p-2 border rounded"
+                required
+              />
               <label className="block mb-1">Password:</label>
               <input
                 type="text"
