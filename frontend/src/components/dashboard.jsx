@@ -19,25 +19,24 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
     console.log("Kart Product: ",kartProduct);
   }, [kartProduct, details]);
 
-  const addKart = async (product) => {
+  
+
+  const updateKart = async (currentProduct) => {
     try {
-      console.log(count)
-      console.log(product);
-      
-      const response = await axios.post(
-        'http://localhost:5000/api/addToKart', {
-          id: product,
-          productUser: currentUser,
-          product,
-          count
-        }
-        
-      );  
-      console.log('Product added to kart:', response.data);
+      console.log("Updating kart with product:", currentProduct);
+      const response = await axios.put('http://localhost:5000/api/updateKart', {
+        currentProduct,
+        productId: currentProduct._id,
+        currentUser,
+        products,
+        count
+      });
+      console.log('Kart updated successfully:', response.data);
     } catch (error) {
-      console.error('Error adding product to kart:', error);
+      console.error('Error updating kart:', error);
     }
   }
+
 
   const showKart = async () => {
     try {
@@ -46,8 +45,8 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
           params:{ productUser: currentUser}}
       );
      
-      setKartProduct(response.data)
-      console.log("responce.data:", kartProduct);
+      setKartProduct(response.data.p)
+      console.log("responce.data:", response.data.p);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -70,7 +69,7 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
     }
   }
 
-  const updateKart = async (id) => {
+  const deleteKart = async (id) => {
     try {
       console.log(id);
        await axios.delete(`http://localhost:5000/api/deleteKart/${id}` );
@@ -87,7 +86,7 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
      
      <h1>name: {productDetails.name} | price: {productDetails.price} | category: {productDetails.category}</h1>
              <button onClick={() => {
-              addKart(productDetails._id)
+              updateKart(productDetails)
              }
           }>
            Buy
@@ -105,13 +104,13 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
         {kartProduct.map(products => (
           <li key={products._id}>
             <h2>
-              Name: {products.product.name} | 
-              Price: {products.product.price} | 
-              Category: {products.product.category}
+              Name: {products.name} | 
+              Price: {products.price} | 
+              Category: {products.category}
             </h2>
             <button onClick={() => {
              setCount(count - 1);
-             updateKart(products._id)   
+             deleteKart(products._id)   
             }
             }
             
@@ -138,13 +137,7 @@ function Dashboard({ products, currentUser, setCurrentUser}) {
             }}>
             <h2>{product.name} </h2>
             </button>
-            <button onClick={() => {
-              setCount(count + 1);
-              addKart(product)
-             }
-          }>
-           Buy
-          </button>
+           
           </li>
         ))}
       </ul>

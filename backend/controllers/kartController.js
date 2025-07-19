@@ -3,34 +3,78 @@ import KartItem from "../db/KartItem.js";
 
 export const addKart = async (req, res) => {
     console.log("Received add to kart request:" )
-    
-    const {productUser, id, product,  count} = req.body;
-        console.log(productUser, id, product, count);
+    const  productUser  = req.body.new_id;
+    console.log("Product User:", productUser);
     try {
-        const newKartItem = new KartItem({ productId: id, userId: productUser, quantity: count, selected: true, product: [{
-            name: product.name,
-            price: product.price,
-            category: product.category
-        }] });
+        const newKartItem = new KartItem({
+            userId: productUser,
+            product: []
+        });
         await newKartItem.save();
-        console.log("product Kart:", newKartItem);
-        res.status(201).json({ message: 'Product added to kart successfully' });
+        console.log("Kart item added successfully:", newKartItem);    
+        res.status(201).json({ message: 'Kart item added successfully', kartItem: newKartItem });
     } catch (error) {
-        res.status(500).json({ error: 'Error adding product to kart' });
+        console.error('Error adding kart item:', error);
+        res.status(500).json({ error: 'Error adding kart item' 
+        });
+
     }
-    
 }
+
+
+export const updateKart = async (req, res) => {
+    console.log("on update Kart")
+    
+    const { currentProduct, productId, currentUser, products, count } = req.body;
+    console.log("Current ProductId:", productId);  
+    const productUser = await KartItem.findOne({ userId: currentUser });
+   
+    if(productUser.product.length === 0) {
+        console.log("No products in kart");
+        productUser.product.push({
+            name: currentProduct.name,
+            price: currentProduct.price,
+            category: currentProduct.category,
+            quantity: count, 
+            productId: productId,
+        });
+        await productUser.save();
+        console.log(productUser);
+    }
+    else {
+        console.log("Products in kart:", productUser.product);
+        const existingProductIndex = productUser.product.findIndex(item => item.productId === productId);
+        if (existingProductIndex !== -1) {
+            console.log("Product already exists in kart, updating quantity at", existingProductIndex);
+            productUser.product[existingProductIndex].quantity += count;
+            console.log("Updated product:", productUser.product[existingProductIndex]);
+        }
+        else {
+            console.log("Product not found in kart");
+            productUser.product.push({
+                name: currentProduct.name,
+                price: currentProduct.price,
+                category: currentProduct.category,
+                quantity: count, 
+                productId: productId,
+            });
+            console.log("Added new product", currentProduct);
+        }
+        await productUser.save();
+}
+console.log("final kart item:", productUser)
+}
+
 
 export const showKart = async (req, res) => {
     const { productUser } = req.query;
     console.log(productUser);
     try {
-        const kartItems = await KartItem.find({
+        const kartItems = await KartItem.findOne({
             userId: productUser
- 
         });
-        console.log("Kart items:", kartItems);
-        res.status(200).json(kartItems);
+        console.log("Kart items:", kartItems.product);
+        res.status(200).json({p: kartItems.product});
     } catch (error) {
         res.status(500).json({ error: 'Error fetching kart items' });
     }

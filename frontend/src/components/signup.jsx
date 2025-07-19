@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
+
 function Signup({ setCurrentUser }) {
   const navigate= useNavigate();
   
@@ -10,7 +11,24 @@ function Signup({ setCurrentUser }) {
     name: '',
     password: ''
   });
-
+  
+  const addKart = async (new_id) => {
+    try {
+      console.log("Adding from signup", new_id);
+      const response = await axios.post(
+        'http://localhost:5000/api/addToKart', 
+          
+           {new_id}
+         
+        
+        
+      );  
+      console.log('Product added to kart:', response.data);
+    } catch (error) {
+      console.error('Error adding product to kart:', error);
+    }
+  }
+  
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
@@ -19,6 +37,7 @@ function Signup({ setCurrentUser }) {
       const new_id = signUp.data.id;
       localStorage.setItem('currentUser', JSON.stringify(new_id))
       setCurrentUser(new_id);
+      addKart(new_id);
       navigate('/dashboard');
            
     } catch (error) {
