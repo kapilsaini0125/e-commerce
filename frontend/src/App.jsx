@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
 import Login from './components/login';
+import Admin from './components/admin';
+import NewAdmin from './components/newAdmin';
 
 
 
@@ -43,8 +45,10 @@ function App(){
       <Routes>
         <Route path="/" element={currentUser? <Navigate to="/dashboard" />: <Navigate to="/signup" />} />
         <Route path="/signup" element={<Signup setCurrentUser={setCurrentUser}/>} />
+        <Route path="/admin" element={<Admin />}/>
         <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
         <Route path="/dashboard" element={<Dashboard  products={products} currentUser= {currentUser} setCurrentUser={setCurrentUser}/>} />
+        <Route path="/newAdmin" element={<NewAdmin/>}/>
        </Routes>
           </BrowserRouter>
        

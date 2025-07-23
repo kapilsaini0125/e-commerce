@@ -33,7 +33,7 @@ function Signup({ setCurrentUser }) {
     e.preventDefault();
     try {
       console.log("on signup");
-      const signUp = await axios.post('http://localhost:5000/api/todos/account/signup', formData);
+      const signUp = await axios.post('http://localhost:5000/api/account/signup', formData);
       const new_id = signUp.data.id;
       localStorage.setItem('currentUser', JSON.stringify(new_id))
       setCurrentUser(new_id);
@@ -47,6 +47,11 @@ function Signup({ setCurrentUser }) {
 
   return (
     <div className="container mx-auto p-4 max-w-md">
+      <button onClick={() =>{
+        navigate('/admin');
+      }}>
+        Admin
+      </button>
       <div className="container mx-auto p-4 max-w-md">
         <h1 className="text-2xl font-bold mb-4">Signup page</h1>
         <form onSubmit={handleSignUp} className="space-y-4">

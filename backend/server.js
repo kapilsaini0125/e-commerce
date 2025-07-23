@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import accountRoutes from './routes/accountRoutes.js';
 import kartRoutes from './routes/kartRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -24,7 +25,8 @@ catch(error){
 }
 
 
-app.use('/api/todos/account', accountRoutes)
+app.use('/api/account', accountRoutes)
+app.use('/api/account/manage', adminRoutes)
 app.use('/api', kartRoutes)
 app.use('/api/products', productRoutes);
 

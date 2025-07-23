@@ -18,7 +18,7 @@ const handleLogIn = async (e) => {
        
       try{
        
-        const findUser = await axios.post('http://localhost:5000/api/todos/account/login', formData);
+        const findUser = await axios.post('http://localhost:5000/api/account/login', formData);
         console.log(findUser.data.id)
         if(findUser.data.id== null)
           {

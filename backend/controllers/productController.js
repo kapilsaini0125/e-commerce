@@ -3,6 +3,7 @@ import Product from '../db/Product.js';
 
 export const dashboardProducts = async (req, res) => {
     
+  console.log("on dashboard product endpoint")
     
     const sampleProducts= [
         { 
@@ -27,6 +28,7 @@ export const dashboardProducts = async (req, res) => {
         }
     ]
     
+  
     const result = await Product.insertMany(sampleProducts);
     
     res.json(result);
@@ -49,4 +51,9 @@ export const productDetails = async (req, res) => {
         console.error('Error fetching product details:', error);
         res.status(500).json({ error: 'Error fetching product details' });
     }
+}
+
+
+export const addProduct = async (req,res) => {
+  console.log("hello new porduct");
 }
